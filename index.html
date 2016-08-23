@@ -22,21 +22,21 @@
       xhr.send();
     };
 
-    var draw = function(tempFahrenheit) {
+    var draw = function(temperature) {
       context.textBaseline = 'top';
       context.textAlign = 'center';
       context.fontStretch = 1;
       context.angle = 0;
 
       // TODO - measure text to determine best font size (context.measureText(text).width)
-      var fontSize = tempFahrenheit > 99 ? 16 : 22;
+      var fontSize = temperature > 99 ? 16 : 22;
       context.font = 'normal normal bold ' + fontSize + 'px/' + fontSize + 'px Arial';
       context.fillStyle = '#444';
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      var text = tempFahrenheit + '°';
-      context.fillText(text, 16, tempFahrenheit > 99 ? 8 : 4);
+      var text = temperature + '°';
+      context.fillText(text, 16, temperature > 99 ? 8 : 4);
 
       document.body.querySelector('temp').textContent = text;
       document.head.querySelector('[type="image/x-icon"]').href = canvas.toDataURL();
@@ -54,9 +54,14 @@
         if (!data.main) return;
 
         var tempKelvin = data.main.temp;
-        var tempFahrenheit = ((tempKelvin - 273.15).toPrecision(4) * 9 / 5 + 32).toPrecision(2);
+        var temperature = (tempKelvin - 273.15);
+        if (location.hash.indexOf('u=c') > -1) {
+          temperature = temperature.toPrecision(2);
+        } else {
+          temperature = (temperature * 9 / 5 + 32).toPrecision(2);
+        }
 
-        draw(tempFahrenheit);
+        draw(temperature);
       });
     };
 
